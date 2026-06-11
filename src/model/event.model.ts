@@ -19,14 +19,14 @@ export async function saveUserRegister(data: UserDataRegister, eventId: number) 
 
     try {
         await connection.beginTransaction();
-        const queryRegistro = `
+        const registerQuery = `
             INSERT INTO registros (
                 evento_id, conferencia_id, talla_camiseta_id, nombre, apellidos, 
                 correo, telefono, fecha_nacimiento, genero, estado_id, ciudad, 
                 iglesia, incluir_lunchtime, es_chaperon, pago_camiseta, pago_lunchtime
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
-        const valoresRegistro = [
+        const registerData = [
             eventId, data.conferencia_id, data.talla_camiseta_id,
             data.nombre, data.apellidos, data.correo,
             data.telefono, data.fecha_nacimiento, data.genero,
@@ -35,31 +35,31 @@ export async function saveUserRegister(data: UserDataRegister, eventId: number) 
             data.pago_camiseta, data.pago_lunchtime 
         ];
 
-        const [resultRegistro] = await connection.execute<ResultSetHeader>(queryRegistro, valoresRegistro);
+        const [resultRegister] = await connection.execute<ResultSetHeader>(registerQuery, registerData);
 
-        if (resultRegistro.affectedRows === 0) {
+        if (resultRegister.affectedRows === 0) {
             throw new Error('Error al insertar el registro principal, no se afectaron filas.');
         }
 
-        const nuevoRegistroId = resultRegistro.insertId;
+        const newRegisterId = resultRegister.insertId;
 
-        const queryContacto = `
+        const queryContactData = `
             INSERT INTO contactos_emergencia (registro_id, nombre_contacto, telefono_contacto, relacion)
             VALUES (?, ?, ?, ?)
         `;
-        const valoresContacto = [
-            nuevoRegistroId, data.contacto_emergencia.nombre_contacto,
+        const contactData = [
+            newRegisterId, data.contacto_emergencia.nombre_contacto,
             data.contacto_emergencia.telefono_contacto, data.contacto_emergencia.relacion
         ];
 
-        const [resultContacto] = await connection.execute<ResultSetHeader>(queryContacto, valoresContacto);
+        const [resultContact] = await connection.execute<ResultSetHeader>(queryContactData, contactData);
 
-        if (resultContacto.affectedRows === 0) {
+        if (resultContact.affectedRows === 0) {
             throw new Error('Error al insertar el contacto de emergencia, no se afectaron filas.');
         }
 
         await connection.commit();
-        return nuevoRegistroId;
+        return newRegisterId;
 
     } catch (error) {
         await connection.rollback();
