@@ -1,6 +1,8 @@
 USE registro_usuarios_evento;
 SELECT * FROM conferencias;
 
+SELECT  * FROM eventos where id =1 ;
+
 SELECT * FROM conferencias;
 
 SELECT e.id, e.nombre, e.codigo
