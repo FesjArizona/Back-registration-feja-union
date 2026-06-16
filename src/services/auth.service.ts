@@ -38,10 +38,7 @@ export async function login(email: string, password: string) {
     };
 }
 
-export async function verifyToken(token: string) {
-    try {
-        return jwt.verify(token, SECRET);
-    } catch (err) {
-        return false
-    }
+export function verifyToken(token: string) {
+    return jwt.verify(token, SECRET);
+
 }

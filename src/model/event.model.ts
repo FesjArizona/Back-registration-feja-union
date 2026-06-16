@@ -1,6 +1,6 @@
 import pool from '../conection/index';
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
-import { UserDataRegister } from '../interfaces/register.interface';
+import { PayData, UserDataRegister } from '../interfaces/register.interface';
 
 
 export async function getEvents() {
@@ -32,7 +32,7 @@ export async function saveUserRegister(data: UserDataRegister, eventId: number) 
             data.telefono, data.fecha_nacimiento, data.genero,
             data.estado_id, data.ciudad, data.iglesia,
             data.incluir_lunchtime, data.es_chaperon,
-            data.pago_camiseta, data.pago_lunchtime 
+            data.pago_camiseta, data.pago_lunchtime
         ];
 
         const [resultRegister] = await connection.execute<ResultSetHeader>(registerQuery, registerData);
@@ -60,6 +60,103 @@ export async function saveUserRegister(data: UserDataRegister, eventId: number) 
 
         await connection.commit();
         return newRegisterId;
+
+    } catch (error) {
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release();
+    }
+}
+
+export async function getEventRegistrations(eventId: number) {
+    const [rows] = await pool.query<RowDataPacket[]>('SELECT  * FROM registros where evento_id = ?', [eventId]);
+    return rows
+}
+
+export async function getRegistration(registerId: number) {
+    const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM registros where id = ?', [registerId]);
+    return rows
+}
+
+export async function checkIn(registerId: number, adminId: number) {
+    const connection = await pool.getConnection();
+    try {
+        await connection.beginTransaction();
+
+        const queryUpdate = `
+            UPDATE registros 
+            SET checkin_at = CURRENT_TIMESTAMP 
+            WHERE id = ? AND checkin_at IS NULL
+        `;
+        const [resultUpdate] = await connection.execute<ResultSetHeader>(queryUpdate, [registerId]);
+
+        if (resultUpdate.affectedRows === 0) {
+            throw new Error('El registro no existe o ya tiene check-in.');
+        }
+
+        const queryLog = `
+            INSERT INTO log_checkins (registro_id, admin_id) 
+            VALUES (?, ?)
+        `;
+        await connection.execute<ResultSetHeader>(queryLog, [registerId, adminId]);
+
+        await connection.commit();
+        return true;
+
+    } catch (error) {
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release();
+    }
+}
+
+export async function updatePaymentRegister(registroId: number, adminId: number, data: PayData) {
+    const connection = await pool.getConnection();
+    let updateRequireLunchTime = ""
+    try {
+        await connection.beginTransaction();
+
+        const columnaDestino = data.concepto === 'camiseta' ? 'pago_camiseta' : 'pago_lunchtime';
+        if (data.concepto === 'lunchtime') {
+            if (data.estatus_nuevo === 'pagado' || data.estatus_nuevo === 'pendiente') {
+                updateRequireLunchTime = ", incluir_lunchtime = 1";
+            } else if (data.estatus_nuevo === 'no_aplica') {
+                updateRequireLunchTime = ", incluir_lunchtime = 0";
+            }
+        }
+        const queryUpdate = `
+            UPDATE registros 
+            SET ${columnaDestino} = ? ${updateRequireLunchTime}
+            WHERE id = ?
+        `;
+        const [resultUpdate] = await connection.execute<ResultSetHeader>(queryUpdate, [
+            data.estatus_nuevo,
+            registroId
+        ]);
+
+        if (resultUpdate.affectedRows === 0) {
+            throw new Error('El registro no existe o no pudo ser actualizado.');
+        }
+
+        const queryLog = `
+            INSERT INTO log_pagos (registro_id, admin_id, concepto, estatus_nuevo, notas) 
+            VALUES (?, ?, ?, ?, ?)
+        `;
+
+        const notasParaGuardar = data.notas ? data.notas : null;
+
+        await connection.execute<ResultSetHeader>(queryLog, [
+            registroId,
+            adminId,
+            data.concepto,
+            data.estatus_nuevo,
+            notasParaGuardar
+        ]);
+
+        await connection.commit();
+        return true;
 
     } catch (error) {
         await connection.rollback();

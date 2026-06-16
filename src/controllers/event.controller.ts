@@ -1,5 +1,7 @@
-import { UserDataRegister } from '../interfaces/register.interface';
+import { PayData, UserDataRegister } from '../interfaces/register.interface';
 import { catchAsync, AppError } from '../middlewares/errorHandler';
+import { AuthRequest } from '../middlewares/auth.middleware';
+import { Request, Response } from 'express';
 import * as eventModel from '../model/event.model'
 
 export const getEvents = catchAsync(async (req, res) => {
@@ -34,5 +36,64 @@ export const saveUserRegister = catchAsync(async (req, res) => {
     return {
         code: 200,
         data: result
+    };
+});
+
+export const getEventRegistrations = catchAsync(async (req, res) => {
+    const { id } = req.params;
+    if (!id) {
+        throw new AppError(400, 'El campo id es necesario');
+    }
+    const eventId = parseInt(id as string, 10);
+    const registrations = await eventModel.getEventRegistrations(eventId)
+    return {
+        code: 200,
+        data: registrations
+    };
+});
+
+export const getRegistration = catchAsync(async (req, res) => {
+    const { id } = req.params;
+    if (!id) {
+        throw new AppError(400, 'El campo id es necesario');
+    }
+    const registerId = parseInt(id as string, 10);
+    const registration = await eventModel.getRegistration(registerId)
+    return {
+        code: 200,
+        data: registration[0]
+    };
+});
+
+export const checkIn = catchAsync(async (req: AuthRequest, res: Response) => {
+    const registerId = parseInt(req.params.id as string, 10);
+    const adminId = req.user.id;
+    await eventModel.checkIn(registerId, adminId);
+
+    return {
+        code: 200,
+        data: { message: 'Check-in realizado con éxito' }
+    };
+});
+
+export const updatePaymentRegister = catchAsync(async (req: AuthRequest, res: Response) => {
+    const authReq = req as AuthRequest;
+
+    const registerId = parseInt(req.params.id as string, 10);
+    const adminId = authReq.user.id;
+    const data = req.body as PayData;
+
+    if (!['camiseta', 'lunchtime'].includes(data.concepto)) {
+        return {
+            code: 400,
+            data: { message: 'Concepto de pago no válido' }
+        };
+    }
+
+    await eventModel.updatePaymentRegister(registerId, adminId, data);
+
+    return {
+        code: 200,
+        data: { message: `Estatus de ${data.concepto} actualizado correctamente` }
     };
 });

@@ -23,3 +23,9 @@ interface EmergencyData {
     telefono_contacto: string,
     relacion: string
 }
+
+export interface PayData {
+    concepto: 'camiseta' | 'lunchtime';
+    estatus_nuevo: 'pendiente' | 'pagado' | 'no_aplica';
+    notas?: string; 
+}
