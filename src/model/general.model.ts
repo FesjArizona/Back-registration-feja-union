@@ -14,10 +14,6 @@ export async function getConferences(stateId: number) {
 
 }
 
-// export async function getStates(id: number) {
-//    
-// }
-
 export async function getStates() {
     const [rows] = await pool.query<RowDataPacket[]>(`
         SELECT * FROM estados`
