@@ -12,3 +12,4 @@ eventRoutes.get('/registration/:id', requireAuth, eventsController.getRegistrati
 eventRoutes.get('/:id/registrations', requireAuth, eventsController.getEventRegistrations);
 eventRoutes.get('/register/:id/checkin', requireAuth, eventsController.checkIn);
 eventRoutes.post('/register/:id/updatePayment', requireAuth, eventsController.updatePaymentRegister);
+eventRoutes.delete('/register/:id/delete', requireAuth, eventsController.removeRegister);

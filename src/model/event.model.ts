@@ -171,3 +171,7 @@ export async function updatePaymentRegister(registroId: number, adminId: number,
         connection.release();
     }
 }
+
+export async function removeRegister(registerId: number) {
+    await pool.query('DELETE FROM registros WHERE id = ?', [registerId]);
+}

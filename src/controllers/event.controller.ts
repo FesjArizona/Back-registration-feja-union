@@ -97,3 +97,21 @@ export const updatePaymentRegister = catchAsync(async (req: AuthRequest, res: Re
         data: { message: `Estatus de ${data.concepto} actualizado correctamente` }
     };
 });
+
+
+export const removeRegister = catchAsync(async (req: AuthRequest, res: Response) => {
+    const registerId = parseInt(req.params.id as string, 10);
+    const registration = await eventModel.getRegistration(registerId)
+    if (!registration) {
+        return {
+            code: 200,
+            data: { message: 'Registro no encontrado' }
+        };
+    }
+    await eventModel.removeRegister(registerId);
+
+    return {
+        code: 200,
+        data: { message: 'registro eliminado' }
+    };
+});
