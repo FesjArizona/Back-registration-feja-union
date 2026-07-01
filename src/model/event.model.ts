@@ -175,3 +175,19 @@ export async function updatePaymentRegister(registroId: number, adminId: number,
 export async function removeRegister(registerId: number) {
     await pool.query('DELETE FROM registros WHERE id = ?', [registerId]);
 }
+
+export async function updateRegister(data: any, id: number) {
+    const keys = Object.keys(data);
+
+    if (keys.length === 0) return { message: 'No hay datos para actualizar' };
+
+    const values = Object.values(data);
+
+    const setClause = keys.map(key => `${key} = ?`).join(', ');
+
+    const sql = `UPDATE registros SET ${setClause} WHERE id = ?`;
+    values.push(id);
+
+    const [result] = await pool.query(sql, values);
+    return result;
+}

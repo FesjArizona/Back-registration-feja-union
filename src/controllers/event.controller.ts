@@ -115,3 +115,15 @@ export const removeRegister = catchAsync(async (req: AuthRequest, res: Response)
         data: { message: 'registro eliminado' }
     };
 });
+
+
+export const updateRegister = catchAsync(async (req: AuthRequest, res: Response) => {
+    const registerId = parseInt(req.params.id as string, 10);
+    const data = req.body as any;
+    await eventModel.updateRegister(data, registerId)
+
+    return {
+        code: 200,
+        data: { message: 'registro actualizado' }
+    };
+});
