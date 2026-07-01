@@ -176,9 +176,15 @@ export async function removeRegister(registerId: number) {
     await pool.query('DELETE FROM registros WHERE id = ?', [registerId]);
 }
 
-export async function updateRegister(data: any, id: number) {
+export async function updateRegister(data: any, id: number, adminId: number) {
+    if (data.hasOwnProperty('pago_lunchtime')) {
+        if (data.pago_lunchtime === 'pagado' || data.pago_lunchtime === 'pendiente') {
+            data.incluir_lunchtime = 1;
+        } else if (data.pago_lunchtime === 'no_aplica') {
+            data.incluir_lunchtime = 0;
+        }
+    }
     const keys = Object.keys(data);
-
     if (keys.length === 0) return { message: 'No hay datos para actualizar' };
 
     const values = Object.values(data);
@@ -188,6 +194,7 @@ export async function updateRegister(data: any, id: number) {
     const sql = `UPDATE registros SET ${setClause} WHERE id = ?`;
     values.push(id);
 
-    const [result] = await pool.query(sql, values);
+    const [result] = await pool.query<ResultSetHeader>(sql, values);
+
     return result;
 }

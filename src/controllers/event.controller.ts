@@ -119,8 +119,10 @@ export const removeRegister = catchAsync(async (req: AuthRequest, res: Response)
 
 export const updateRegister = catchAsync(async (req: AuthRequest, res: Response) => {
     const registerId = parseInt(req.params.id as string, 10);
+    const authReq = req as AuthRequest;
     const data = req.body as any;
-    await eventModel.updateRegister(data, registerId)
+    const adminId = authReq.user.id;
+    await eventModel.updateRegister(data, registerId, adminId)
 
     return {
         code: 200,
