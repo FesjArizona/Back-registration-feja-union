@@ -186,9 +186,9 @@ export async function updateRegister(data: any, id: number, adminId: number) {
     }
 
     if (data.hasOwnProperty('pago_camiseta')) {
-        if (data.pago_lunchtime === 'pagado' || data.pago_lunchtime === 'pendiente') {
+        if (data.pago_camiseta === 'pagado' || data.pago_camiseta === 'pendiente') {
             data.incluir_camisa = 1;
-        } else if (data.pago_lunchtime === 'no_aplica') {
+        } else if (data.pago_camiseta === 'no_aplica') {
             data.incluir_camisa = 0;
         }
     }
