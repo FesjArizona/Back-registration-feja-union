@@ -187,9 +187,9 @@ export async function updateRegister(data: any, id: number, adminId: number) {
 
     if (data.hasOwnProperty('pago_camiseta')) {
         if (data.pago_lunchtime === 'pagado' || data.pago_lunchtime === 'pendiente') {
-            data.incluir_lunchtime = 1;
+            data.incluir_camisa = 1;
         } else if (data.pago_lunchtime === 'no_aplica') {
-            data.incluir_lunchtime = 0;
+            data.incluir_camisa = 0;
         }
     }
 
