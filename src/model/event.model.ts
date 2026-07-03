@@ -21,18 +21,18 @@ export async function saveUserRegister(data: UserDataRegister, eventId: number) 
         await connection.beginTransaction();
         const registerQuery = `
             INSERT INTO registros (
-                evento_id, conferencia_id, talla_camiseta_id, nombre, apellidos, 
+                evento_id, conferencia_id, talla_camiseta_id,incluir_camisa, nombre, apellidos, 
                 correo, telefono, fecha_nacimiento, genero, estado_id, ciudad, 
-                iglesia, incluir_lunchtime, es_chaperon, pago_camiseta, pago_lunchtime
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                iglesia, incluir_lunchtime, es_chaperon, pago_camiseta, pago_lunchtime,alimento_especial_nota,tipo_alimento
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
         const registerData = [
-            eventId, data.conferencia_id, data.talla_camiseta_id,
+            eventId, data.conferencia_id, data.talla_camiseta_id, data.incluir_camisa,
             data.nombre, data.apellidos, data.correo,
             data.telefono, data.fecha_nacimiento, data.genero,
             data.estado_id, data.ciudad, data.iglesia,
             data.incluir_lunchtime, data.es_chaperon,
-            data.pago_camiseta, data.pago_lunchtime
+            data.pago_camiseta, data.pago_lunchtime, data.alimento_especial_nota, data.tipo_alimento
         ];
 
         const [resultRegister] = await connection.execute<ResultSetHeader>(registerQuery, registerData);

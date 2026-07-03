@@ -30,7 +30,7 @@ export const getEventById = catchAsync(async (req, res) => {
 export const saveUserRegister = catchAsync(async (req, res) => {
     const eventId = parseInt(req.params.id as string, 10);
     const data = req.body as UserDataRegister;
-    data.pago_camiseta = data.talla_camiseta_id ? 'pendiente' : 'no_aplica';
+    data.pago_camiseta = data.incluir_camisa ? 'pendiente' : 'no_aplica';
     data.pago_lunchtime = data.incluir_lunchtime ? 'pendiente' : 'no_aplica';
     const result = await eventModel.saveUserRegister(data, eventId)
     return {

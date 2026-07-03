@@ -15,6 +15,9 @@ export interface UserDataRegister {
     es_chaperon: boolean,
     pago_lunchtime: string
     pago_camiseta: string
+    incluir_camisa: boolean,
+    alimento_especial_nota: string,
+    tipo_alimento: string
     contacto_emergencia: EmergencyData
 }
 
@@ -27,5 +30,5 @@ interface EmergencyData {
 export interface PayData {
     concepto: 'camiseta' | 'lunchtime';
     estatus_nuevo: 'pendiente' | 'pagado' | 'no_aplica';
-    notas?: string; 
+    notas?: string;
 }
