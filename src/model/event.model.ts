@@ -71,11 +71,30 @@ export async function saveUserRegister(data: UserDataRegister, eventId: number) 
 
 export async function getEventRegistrations(eventId: number) {
     const [rows] = await pool.query<RowDataPacket[]>(`
-        select r.conferencia_id, r.talla_camiseta_id, estado_id,ciudad,r.id, r.nombre, r.apellidos, r.telefono, r.correo,r.checkin_at,r.pago_camiseta,r.pago_lunchtime,r.created_at,c.nombre as conferencia , e.nombre as estado , tc.talla 
+         select 
+  r.conferencia_id, 
+  r.talla_camiseta_id, 
+  r.estado_id,
+  r.ciudad,
+  r.id,
+  r.nombre,
+  r.apellidos,
+  r.telefono,
+  r.correo,
+  r.checkin_at,
+  r.pago_camiseta,
+  r.incluir_camisa,
+  r.tipo_alimento,
+  r.alimento_especial_nota,
+  r.pago_lunchtime,
+  r.created_at,
+  c.nombre as conferencia ,
+  e.nombre as estado ,
+  tc.talla 
         from registros r
         inner join conferencias c on c.id = r.conferencia_id
         inner join 	estados e on e.id = r.estado_id
-        inner join tallas_camiseta tc on tc.id = r.talla_camiseta_id where r.evento_id = ?
+        inner join tallas_camiseta tc on tc.id = r.talla_camiseta_id where r.evento_id = ?;
         `, [eventId]);
     return rows
 }
