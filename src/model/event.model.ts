@@ -212,6 +212,14 @@ export async function updateRegister(data: any, id: number, adminId: number) {
         }
     }
 
+    if (data.hasOwnProperty('checkin_at')) {
+        if (data.checkin_at) {
+            data.checkin_at = new Date();
+        } else {
+            data.checkin_at = null;
+        }
+    }
+
     const keys = Object.keys(data);
     if (keys.length === 0) return { message: 'No hay datos para actualizar' };
 
