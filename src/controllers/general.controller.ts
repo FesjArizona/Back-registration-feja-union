@@ -1,3 +1,5 @@
+import { AuthRequest } from '../middlewares/auth.middleware';
+import { Request, Response } from 'express';
 import { catchAsync, AppError } from '../middlewares/errorHandler';
 import * as generalModel from '../model/general.model'
 
@@ -24,6 +26,29 @@ export const getStates = catchAsync(async (req, res) => {
 
 export const getShirtSizes = catchAsync(async (req, res) => {
     const result = await generalModel.getShirtSizes()
+    return {
+        code: 200,
+        data: result
+    };
+});
+
+
+export const getResumen = catchAsync(async (req: AuthRequest, res: Response) => {
+    const { id } = req.params;
+    if (!id) {
+        throw new AppError(400, 'El campo id es necesario');
+    }
+    const eventId = parseInt(id as string, 10);
+    const totalRegistrados = await generalModel.totalRegistrados(eventId)
+    const totalCheckin = await generalModel.totalCheckin(eventId)
+    const totalCamisaPagada = await generalModel.totalCamisaPagada(eventId)
+    const totalLunchPagada = await generalModel.totalLunchPagada(eventId)
+    const result = {
+        totalRegistrados,
+        totalCheckin,
+        totalCamisaPagada,
+        totalLunchPagada
+    }
     return {
         code: 200,
         data: result

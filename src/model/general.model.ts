@@ -25,3 +25,27 @@ export async function getShirtSizes() {
     const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM tallas_camiseta');
     return rows
 }
+
+export async function totalRegistrados(eventId: number) {
+    const [rows] = await pool.query<RowDataPacket[]>('select count(id) as total_registrados from registros where evento_id = ?;', [2]);
+    return rows[0].total_registrados
+}
+
+export async function totalCheckin(eventId: number) {
+    const [rows] = await pool.query<RowDataPacket[]>('select count(id) as total_checkin from registros where checkin_at is not null and evento_id = ?;', [2]);
+    return rows[0].total_checkin
+}
+
+export async function totalCamisaPagada(eventId: number) {
+    const [rows] = await pool.query<RowDataPacket[]>('select count(id) as total_camisa_pagada from registros where incluir_camisa = ? and pago_camiseta = ? and evento_id = ? ;',
+        [1, "pagado", 2]);
+    return rows[0].total_camisa_pagada
+}
+
+export async function totalLunchPagada(eventId: number) {
+    const [rows] = await pool.query<RowDataPacket[]>('select count(id) as total_lunchtime_pagado from registros where incluir_lunchtime = ? and pago_lunchtime = ? and evento_id = ?;',
+        [1, 'pagado', 2]);
+    return rows[0].total_lunchtime_pagado
+}
+
+
