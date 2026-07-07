@@ -43,12 +43,12 @@ export const getResumen = catchAsync(async (req: AuthRequest, res: Response) => 
     const totalCheckin = await generalModel.totalCheckin(eventId)
     const totalCamisaPagada = await generalModel.totalCamisaPagada(eventId)
     const totalLunchPagada = await generalModel.totalLunchPagada(eventId)
-    const result = {
-        totalRegistrados,
-        totalCheckin,
-        totalCamisaPagada,
-        totalLunchPagada
-    }
+    const result = [
+        { icon: "registered.svg", label: "Total Registrados", value: totalRegistrados },
+        { icon: "check-ed.svg", label: "Check-in Realizados", value: totalCheckin },
+        { icon: "shirts.svg", label: "Camisetas Pagadas", value: totalCamisaPagada },
+        { icon: "lunch.svg", label: "Comidas pagadas", value: totalLunchPagada }
+    ]
     return {
         code: 200,
         data: result
