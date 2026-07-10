@@ -6,8 +6,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    family: 4, 
+    service: "gmail",
     auth: {
         user: process.env.EMAIL_USER || 'tu_correo_del_evento@gmail.com',
         pass: process.env.EMAIL_PASS || 'abcd efgh ijkl mnop'
@@ -103,7 +102,7 @@ export const sendConfirmationMail = async (data: UserDataRegister) => {
         const correoDestino = data.correo || data.correo;
 
         const mailOptions = {
-            from: '"FEJA 2026" <tu_correo_del_evento@gmail.com>', 
+            from: '"FEJA 2026" <tu_correo_del_evento@gmail.com>',
             to: correoDestino,
             subject: 'Confirmación de Registro - FEJA 2026 🎉',
             html: htmlTemplate
