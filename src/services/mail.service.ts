@@ -7,21 +7,20 @@ dotenv.config();
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    family: 4,
+    port: 587, 
+    secure: false, 
+    requireTLS: true,
+    family: 4, 
     auth: {
         user: process.env.EMAIL_USER || 'tu_correo_del_evento@gmail.com',
         pass: process.env.EMAIL_PASS || 'abcd efgh ijkl mnop'
     }
 } as SMTPTransport.Options);
+
 export const sendConfirmationMail = async (data: UserDataRegister) => {
     try {
-        // Formateamos los campos para que se vean bien, validando si existen
         const emergenciaTexto = `${data.contacto_emergencia.nombre_contacto || 'No especificado'} · ${data.contacto_emergencia.telefono_contacto || ''}`;
 
-        // Diseñamos un HTML basado en tablas (El estándar más seguro para correos)
-        // Adaptado al nuevo estilo limpio y minimalista del formulario
         const htmlTemplate = `
             <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; background-color: #f8fafc; color: #334155;">
                 
@@ -104,17 +103,15 @@ export const sendConfirmationMail = async (data: UserDataRegister) => {
             </div>
         `;
 
-        // Extraemos el correo destino dependiendo de cómo se llame en tu interfaz
         const correoDestino = data.correo || data.correo;
 
         const mailOptions = {
-            from: '"FEJA 2026" <tu_correo_del_evento@gmail.com>', // Remitente
+            from: '"FEJA 2026" <tu_correo_del_evento@gmail.com>', 
             to: correoDestino,
             subject: 'Confirmación de Registro - FEJA 2026 🎉',
             html: htmlTemplate
         };
 
-        // Enviamos el correo
         const info = await transporter.sendMail(mailOptions);
         console.log('Correo de resumen enviado exitosamente: ' + info.messageId);
 
