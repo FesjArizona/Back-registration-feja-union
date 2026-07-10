@@ -6,12 +6,12 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
-    service: "gmail",
+    service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER || 'tu_correo_del_evento@gmail.com',
-        pass: process.env.EMAIL_PASS || 'abcd efgh ijkl mnop'
+        user: 'dany.cachorro03@gmail.com',
+        pass: 'uzlj emfq ovhp uoez'
     }
-} as SMTPTransport.Options);
+});
 
 export const sendConfirmationMail = async (data: UserDataRegister) => {
     try {
