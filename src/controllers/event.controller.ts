@@ -2,6 +2,7 @@ import { PayData, UserDataRegister } from '../interfaces/register.interface';
 import { catchAsync, AppError } from '../middlewares/errorHandler';
 import { AuthRequest } from '../middlewares/auth.middleware';
 import { Request, Response } from 'express';
+import { sendConfirmationMail } from '../services/mail.service';
 import * as eventModel from '../model/event.model'
 
 export const getEvents = catchAsync(async (req, res) => {
@@ -33,6 +34,10 @@ export const saveUserRegister = catchAsync(async (req, res) => {
     data.pago_camiseta = data.incluir_camisa ? 'pendiente' : 'no_aplica';
     data.pago_lunchtime = data.incluir_lunchtime ? 'pendiente' : 'no_aplica';
     const result = await eventModel.saveUserRegister(data, eventId)
+    if (data.correo && data.nombre) {
+        sendConfirmationMail(data)
+            .catch(err => console.error('Fallo al enviar el correo:', err));
+    }
     return {
         code: 200,
         data: result
