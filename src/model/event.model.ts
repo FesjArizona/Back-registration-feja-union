@@ -99,6 +99,23 @@ export async function getEventRegistrations(eventId: number) {
     return rows
 }
 
+
+export async function lastRegisters(id: number) {
+    const [rows] = await pool.query<RowDataPacket[]>(`
+        select 
+  r.nombre,
+  r.apellidos,
+  r.correo,
+  r.created_at,
+  c.nombre as conferencia 
+        from registros r
+        inner join conferencias c on c.id = r.conferencia_id
+        WHERE r.evento_id = 2 order by r.id DESC LIMIT 5
+        `, [id]);
+    return rows
+}
+
+
 export async function getRegistration(registerId: number) {
     const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM registros where id = ?', [registerId]);
     return rows

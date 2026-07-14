@@ -5,6 +5,8 @@ import { Request, Response } from 'express';
 import { sendConfirmationMail } from '../services/mail.service';
 import * as eventModel from '../model/event.model'
 
+let clients: Response[] = [];
+
 export const getEvents = catchAsync(async (req, res) => {
     const result = await eventModel.getEvents()
     return {
@@ -34,6 +36,18 @@ export const saveUserRegister = catchAsync(async (req, res) => {
     data.pago_camiseta = data.incluir_camisa ? 'pendiente' : 'no_aplica';
     data.pago_lunchtime = data.incluir_lunchtime ? 'pendiente' : 'no_aplica';
     const result = await eventModel.saveUserRegister(data, eventId)
+
+
+    const activityData = {
+        nombre: `${data.nombre}`.trim(),
+        apellidos: data.apellidos,
+        conferencia: data.nombre_conferencia,
+        correo: data.correo,
+        created_at: new Date().toISOString(),
+    };
+
+    emitNewRegistration(activityData);
+
     if (data.correo && data.nombre) {
         sendConfirmationMail(data)
             .catch(err => console.error('Fallo al enviar el correo:', err));
@@ -134,3 +148,29 @@ export const updateRegister = catchAsync(async (req: AuthRequest, res: Response)
         data: { message: 'registro actualizado' }
     };
 });
+
+export const stream = catchAsync(async (req, res) => {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    clients.push(res);
+
+
+    req.on('close', () => {
+        clients = clients.filter(client => client !== res);
+    });
+})
+export const recentActivity = catchAsync(async (req, res) => {
+    const eventId = parseInt(req.params.id as string, 10);
+    const registers = await eventModel.lastRegisters(eventId);
+    return {
+        code: 200,
+        data: registers
+    };
+})
+
+export const emitNewRegistration = (newRecord: any) => {
+    const sseData = `data: ${JSON.stringify(newRecord)}\n\n`;
+
+    clients.forEach(client => client.write(sseData));
+};
