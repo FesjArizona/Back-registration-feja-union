@@ -23,8 +23,8 @@ export async function saveUserRegister(data: UserDataRegister, eventId: number) 
             INSERT INTO registros (
                 evento_id, conferencia_id, talla_camiseta_id,incluir_camisa, nombre, apellidos, 
                 correo, telefono, fecha_nacimiento, genero, estado_id, ciudad, 
-                iglesia, incluir_lunchtime, es_chaperon, pago_camiseta, pago_lunchtime,alimento_especial_nota,tipo_alimento
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                iglesia, incluir_lunchtime, es_chaperon, pago_camiseta, pago_lunchtime,alimento_especial_nota,tipo_alimento,created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,CONVERT_TZ(NOW(), '+00:00', '-07:00'))
         `;
         const registerData = [
             eventId, data.conferencia_id, data.talla_camiseta_id, data.incluir_camisa,
@@ -94,7 +94,7 @@ export async function getEventRegistrations(eventId: number) {
         from registros r
         inner join conferencias c on c.id = r.conferencia_id
         inner join 	estados e on e.id = r.estado_id
-        inner join tallas_camiseta tc on tc.id = r.talla_camiseta_id where r.evento_id = ?;
+        left join tallas_camiseta tc on tc.id = r.talla_camiseta_id where r.evento_id = ?;
         `, [eventId]);
     return rows
 }
