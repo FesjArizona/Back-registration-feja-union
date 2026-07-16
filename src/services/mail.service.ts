@@ -117,3 +117,32 @@ export const sendConfirmationMail = async (data: UserDataRegister) => {
         return false;
     }
 };
+
+
+export const sendTestEmail = async () => {
+    try {
+
+        const htmlTemplate = `
+            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; background-color: #f8fafc; color: #334155;">
+                <h1>Prueba</h1>
+            </div>
+        `;
+
+        const correoDestino = "daalgaor.17@gmail.com";
+
+        const mailOptions = {
+            from: '"FEJA 2026" <tu_correo_del_evento@gmail.com>',
+            to: correoDestino,
+            subject: 'Confirmación de Registro - FEJA 2026 🎉',
+            html: htmlTemplate
+        };
+
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Correo de resumen enviado exitosamente: ' + info.messageId);
+
+        return true;
+    } catch (error) {
+        console.error('Error al enviar el correo:', error);
+        return false;
+    }
+};

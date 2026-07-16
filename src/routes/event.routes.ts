@@ -5,6 +5,7 @@ import { requireAuth } from '../middlewares/auth.middleware';
 export const eventRoutes = Router();
 
 eventRoutes.get('/', eventsController.getEvents);
+eventRoutes.get('/testEmail', eventsController.testMail);
 eventRoutes.get('/stream', eventsController.stream);
 eventRoutes.get('/recent-activity/:id', eventsController.recentActivity);
 eventRoutes.get('/registration/:id', requireAuth, eventsController.getRegistration);
