@@ -2,7 +2,7 @@ import { PayData, UserDataRegister } from '../interfaces/register.interface';
 import { catchAsync, AppError } from '../middlewares/errorHandler';
 import { AuthRequest } from '../middlewares/auth.middleware';
 import { Request, Response } from 'express';
-import { sendConfirmationMail, sendTestEmail } from '../services/mail.service';
+import { sendConfirmationMail } from '../services/mail.service';
 import * as eventModel from '../model/event.model'
 
 let clients: Response[] = [];
@@ -15,14 +15,6 @@ export const getEvents = catchAsync(async (req, res) => {
     };
 });
 
-export const testMail = catchAsync(async (req, res) => {
-    sendTestEmail()
-        .catch(err => console.error('Fallo al enviar el correo:', err));
-    return {
-        code: 200,
-        data:"prueba"
-    };
-});
 
 export const getEventById = catchAsync(async (req, res) => {
     const { id } = req.params;
