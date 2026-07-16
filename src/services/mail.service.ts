@@ -23,7 +23,7 @@ export const sendConfirmationMail = async (data: UserDataRegister) => {
                 <!-- Encabezado -->
                 <div style="text-align: center; margin-bottom: 25px;">
                     <h1 style="color: #0f172a; margin-bottom: 5px; font-size: 26px;">¡Registro Confirmado!</h1>
-                    <p style="color: #64748b; margin-top: 0; font-size: 15px;">FESJA Arizona 2026</p>
+                    <p style="color: #64748b; margin-top: 0; font-size: 15px;">FEJA Nivel Union - 2026</p>
                 </div>
 
                 <!-- Tarjeta de Resumen Blanca -->
@@ -102,7 +102,7 @@ export const sendConfirmationMail = async (data: UserDataRegister) => {
         const correoDestino = data.correo || data.correo;
 
         const mailOptions = {
-            from: '"FEJA 2026" <tu_correo_del_evento@gmail.com>',
+            from: `FEJA 2026 ${process.env.EMAIL_USER}`,
             to: correoDestino,
             subject: 'Confirmación de Registro - FEJA 2026 🎉',
             html: htmlTemplate
