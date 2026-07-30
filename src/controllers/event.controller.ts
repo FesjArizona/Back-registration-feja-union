@@ -3,6 +3,7 @@ import { catchAsync, AppError } from '../middlewares/errorHandler';
 import { AuthRequest } from '../middlewares/auth.middleware';
 import { Request, Response } from 'express';
 import { sendConfirmationMail } from '../services/mail.service';
+import { logAdminAction } from '../services/log.service';
 import * as eventModel from '../model/event.model'
 
 let clients: Response[] = [];
@@ -89,7 +90,7 @@ export const checkIn = catchAsync(async (req: AuthRequest, res: Response) => {
     const registerId = parseInt(req.params.id as string, 10);
     const adminId = req.user.id;
     await eventModel.checkIn(registerId, adminId);
-
+    await logAdminAction(adminId, 'CHECK_IN', registerId);
     return {
         code: 200,
         data: { message: 'Check-in realizado con éxito' }
@@ -109,7 +110,10 @@ export const updatePaymentRegister = catchAsync(async (req: AuthRequest, res: Re
             data: { message: 'Concepto de pago no válido' }
         };
     }
-
+    await logAdminAction(adminId, 'UPDATE_PAYMENT', registerId, {
+        concepto: data.concepto,
+        nuevo_estatus: data.estatus_nuevo
+    });
     await eventModel.updatePaymentRegister(registerId, adminId, data);
 
     return {
@@ -120,8 +124,10 @@ export const updatePaymentRegister = catchAsync(async (req: AuthRequest, res: Re
 
 
 export const removeRegister = catchAsync(async (req: AuthRequest, res: Response) => {
+    const authReq = req as AuthRequest;
     const registerId = parseInt(req.params.id as string, 10);
     const registration = await eventModel.getRegistration(registerId)
+    const adminId = authReq.user.id;
     if (!registration) {
         return {
             code: 200,
@@ -129,7 +135,9 @@ export const removeRegister = catchAsync(async (req: AuthRequest, res: Response)
         };
     }
     await eventModel.removeRegister(registerId);
-
+    await logAdminAction(adminId, 'DELETE_REGISTER', registerId, {
+        nombre_eliminado: registration.nombre
+    });
     return {
         code: 200,
         data: { message: 'registro eliminado' }
@@ -143,7 +151,7 @@ export const updateRegister = catchAsync(async (req: AuthRequest, res: Response)
     const data = req.body as any;
     const adminId = authReq.user.id;
     await eventModel.updateRegister(data, registerId, adminId)
-
+    await logAdminAction(adminId, 'UPDATE_REGISTER', registerId, data);
     return {
         code: 200,
         data: { message: 'registro actualizado' }

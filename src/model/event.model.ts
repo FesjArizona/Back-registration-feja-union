@@ -118,7 +118,7 @@ export async function lastRegisters(id: number) {
 
 export async function getRegistration(registerId: number) {
     const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM registros where id = ?', [registerId]);
-    return rows
+    return rows[0]
 }
 
 export async function checkIn(registerId: number, adminId: number) {
