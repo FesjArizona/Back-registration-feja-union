@@ -126,7 +126,7 @@ export async function getLogs() {
             al.created_at,
             a.nombre as adminName 
                 FROM admin_logs al
-            INNER JOIN admins a ON a.id = al.admin_id
+            INNER JOIN admins a ON a.id = al.admin_id ORDER BY created_at DESC
         `
     );
     return rows
