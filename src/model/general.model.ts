@@ -117,4 +117,19 @@ export async function registersSizes(eventId: number) {
 }
 
 
+export async function getLogs() {
+    const [rows] = await pool.query<RowDataPacket[]>(`
+        SELECT 
+            al.accion AS action,
+            al.registro_afectado_id AS afectedRegister, 
+            al.detalles as details,
+            al.created_at,
+            a.nombre as adminName 
+                FROM admin_logs al
+            INNER JOIN admins a ON a.id = al.admin_id
+        `
+    );
+    return rows
+}
+
 

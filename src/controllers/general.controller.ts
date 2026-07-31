@@ -130,7 +130,17 @@ export const getTshirtSizesChart = catchAsync(async (req, res) => {
         code: 200,
         data: {
             series: seriesData,
-            labels: labelsData  
+            labels: labelsData
         }
     };
 });
+
+export const getLogs = catchAsync(async (req: AuthRequest, res: Response) => {
+    const result = await generalModel.getLogs()
+    return {
+        code: 200,
+        data: result
+    };
+})
+
+

@@ -10,3 +10,4 @@ generalRoutes.get('/resumen/event/:id', generalController.getResumen);
 generalRoutes.get('/weekly-registrations/event/:id', generalController.weeklyRegistrationsChart);
 generalRoutes.get('/gender-by-month/event/:id', generalController.registersForMonthAndGenderChart);
 generalRoutes.get('/tshirt-sizes/event/:id', generalController.getTshirtSizesChart);
+generalRoutes.get('/logs', generalController.getLogs);
