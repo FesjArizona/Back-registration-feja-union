@@ -94,7 +94,8 @@ export async function getEventRegistrations(eventId: number) {
         from registros r
         inner join conferencias c on c.id = r.conferencia_id
         inner join 	estados e on e.id = r.estado_id
-        left join tallas_camiseta tc on tc.id = r.talla_camiseta_id where r.evento_id = ?;
+        left join tallas_camiseta tc on tc.id = r.talla_camiseta_id where r.evento_id = ?
+        ORDER BY r.created_at DESC;
         `, [eventId]);
     return rows
 }
