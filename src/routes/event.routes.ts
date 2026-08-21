@@ -15,3 +15,4 @@ eventRoutes.post('/register/:id/updatePayment', requireAuth, eventsController.up
 eventRoutes.delete('/register/:id/delete', requireAuth, eventsController.removeRegister);
 eventRoutes.put('/register/:id/update', requireAuth, eventsController.updateRegister);
 eventRoutes.get('/:id', eventsController.getEventById);
+eventRoutes.get('/register/:id/was-food-paid', requireAuth, eventsController.wasFoodPaid);

@@ -252,3 +252,10 @@ export async function updateRegister(data: any, id: number, adminId: number) {
 
     return result;
 }
+
+export async function wasFoodPaid(registerId: number) {
+    const [rows] = await pool.query<RowDataPacket[]>(`
+        SELECT 1 FROM registros WHERE pago_lunchtime = 'pagado' AND incluir_lunchtime = 1 AND id = ?;
+        `, [registerId]);
+    return rows.length > 0
+}

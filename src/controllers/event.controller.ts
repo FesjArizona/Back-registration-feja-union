@@ -184,3 +184,13 @@ export const emitNewRegistration = (newRecord: any) => {
 
     clients.forEach(client => client.write(sseData));
 };
+
+
+export const wasFoodPaid = catchAsync(async (req: AuthRequest, res: Response) => {
+    const registerId = parseInt(req.params.id as string, 10);
+    const wasFoodPaid =  await eventModel.wasFoodPaid(registerId)
+    return {
+        code: 200,
+        data: wasFoodPaid
+    };
+});
