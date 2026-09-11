@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import * as generalController from './../controllers/general.controller'
+import { requireAuth } from '../middlewares/auth.middleware';
 
 export const generalRoutes = Router();
 
@@ -11,3 +12,4 @@ generalRoutes.get('/weekly-registrations/event/:id', generalController.weeklyReg
 generalRoutes.get('/gender-by-month/event/:id', generalController.registersForMonthAndGenderChart);
 generalRoutes.get('/tshirt-sizes/event/:id', generalController.getTshirtSizesChart);
 generalRoutes.get('/logs', generalController.getLogs);
+generalRoutes.get('/churches', requireAuth, generalController.getChurches);

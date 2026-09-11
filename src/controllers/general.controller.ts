@@ -143,4 +143,12 @@ export const getLogs = catchAsync(async (req: AuthRequest, res: Response) => {
     };
 })
 
+export const getChurches = catchAsync(async (req: AuthRequest, res: Response) => {
+    const result = await generalModel.getChurches()
+    return {
+        code: 200,
+        data: result
+    };
+})
+
 

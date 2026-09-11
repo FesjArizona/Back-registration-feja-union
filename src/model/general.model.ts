@@ -132,4 +132,11 @@ export async function getLogs() {
     return rows
 }
 
+export async function getChurches() {
+    const [rows] = await pool.query<RowDataPacket[]>(`
+       SELECT distinct iglesia FROM registros;
+        `
+    );
+    return rows
+}
 
