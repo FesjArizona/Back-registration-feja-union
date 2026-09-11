@@ -79,6 +79,7 @@ export async function getEventRegistrations(eventId: number) {
   r.id,
   r.nombre,
   r.apellidos,
+  r.iglesia,
   r.telefono,
   r.correo,
   r.checkin_at,
