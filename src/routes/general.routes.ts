@@ -12,4 +12,4 @@ generalRoutes.get('/weekly-registrations/event/:id', generalController.weeklyReg
 generalRoutes.get('/gender-by-month/event/:id', generalController.registersForMonthAndGenderChart);
 generalRoutes.get('/tshirt-sizes/event/:id', generalController.getTshirtSizesChart);
 generalRoutes.get('/logs', generalController.getLogs);
-generalRoutes.get('/churches', requireAuth, generalController.getChurches);
+generalRoutes.get('/churches', generalController.getChurches);
