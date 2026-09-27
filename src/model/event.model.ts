@@ -88,6 +88,7 @@ export async function getEventRegistrations(eventId: number) {
   r.tipo_alimento,
   r.alimento_especial_nota,
   r.pago_lunchtime,
+  r.incluir_lunchtime,
   r.created_at,
   c.nombre as conferencia ,
   e.nombre as estado ,
